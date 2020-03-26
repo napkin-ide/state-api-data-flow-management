@@ -10,11 +10,7 @@
     },
     "extensions": {
         "durableTask": {
-<<<<<<< HEAD
             "hubName": "dataflowmanagement",
-=======
-            "hubName": "replacethis",
->>>>>>> a8f32dbd8fe804ea2f3eb388b1f4e5a70bf7e933
             "storageProvider": {
               "connectionStringName": "LCU-STORAGE-CONNECTION",
               "partitionCount": 4
