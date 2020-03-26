@@ -17,14 +17,14 @@ using Newtonsoft.Json.Converters;
 using System.Runtime.Serialization;
 using System.Collections.Generic;
 
-namespace LCU.State.API.NapkinIDE.NapkinIDE.ReplaceThis
+namespace LCU.State.API.NapkinIDE.NapkinIDE.DataFlowManagement
 {
     [Serializable]
     [DataContract]
-    public class ReplaceThisState
+    public class DataFlowManagementState
     {
         #region Constants
-        public const string HUB_NAME = "replacethis";
+        public const string HUB_NAME = "dataflowmanagement";
         #endregion
         
         [DataMember]

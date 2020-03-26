@@ -12,18 +12,18 @@ using LCU.StateAPI;
 using Microsoft.WindowsAzure.Storage.Blob;
 using LCU.StateAPI.Utilities;
 
-namespace LCU.State.API.NapkinIDE.NapkinIDE.ReplaceThis
+namespace LCU.State.API.NapkinIDE.NapkinIDE.DataFlowManagement
 {
     public static class ConnectToState
     {
         [FunctionName("ConnectToState")]
         public static async Task<ConnectToStateResponse> Run([HttpTrigger(AuthorizationLevel.Anonymous, "post")]HttpRequest req, ILogger log,
             ClaimsPrincipal claimsPrincipal, //[LCUStateDetails]StateDetails stateDetails,
-            [SignalR(HubName = ReplaceThisState.HUB_NAME)]IAsyncCollector<SignalRMessage> signalRMessages,
-            [SignalR(HubName = ReplaceThisState.HUB_NAME)]IAsyncCollector<SignalRGroupAction> signalRGroupActions,
+            [SignalR(HubName = DataFlowManagementState.HUB_NAME)]IAsyncCollector<SignalRMessage> signalRMessages,
+            [SignalR(HubName = DataFlowManagementState.HUB_NAME)]IAsyncCollector<SignalRGroupAction> signalRGroupActions,
             [Blob("state-api/{headers.lcu-ent-api-key}/{headers.lcu-hub-name}/{headers.x-ms-client-principal-id}/{headers.lcu-state-key}", FileAccess.ReadWrite)] CloudBlockBlob stateBlob)
         {
-            return await signalRMessages.ConnectToState<ReplaceThisState>(req, log, claimsPrincipal, stateBlob, signalRGroupActions);
+            return await signalRMessages.ConnectToState<DataFlowManagementState>(req, log, claimsPrincipal, stateBlob, signalRGroupActions);
         }
     }
 }

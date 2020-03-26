@@ -9,14 +9,14 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Microsoft.Azure.WebJobs.Extensions.SignalRService;
 
-namespace LCU.State.API.NapkinIDE.NapkinIDE.ReplaceThis
+namespace LCU.State.API.NapkinIDE.NapkinIDE.DataFlowManagement
 {
     public static class Negotiate
     {
         [FunctionName("negotiate")]
         public static SignalRConnectionInfo Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", "options")] HttpRequest req,
-            [SignalRConnectionInfo(HubName = ReplaceThisState.HUB_NAME, UserId = "{headers.x-ms-client-principal-id}")] SignalRConnectionInfo connectionInfo)
+            [SignalRConnectionInfo(HubName = DataFlowManagementState.HUB_NAME, UserId = "{headers.x-ms-client-principal-id}")] SignalRConnectionInfo connectionInfo)
         {
             return connectionInfo;
         }

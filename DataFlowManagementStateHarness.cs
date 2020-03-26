@@ -23,9 +23,9 @@ using LCU.Personas.Enterprises;
 using LCU.Personas.Client.Applications;
 using Fathym.API;
 
-namespace LCU.State.API.NapkinIDE.NapkinIDE.ReplaceThis
+namespace LCU.State.API.NapkinIDE.NapkinIDE.DataFlowManagement
 {
-    public class ReplaceThisStateHarness : LCUStateHarness<ReplaceThisState>
+    public class DataFlowManagementStateHarness : LCUStateHarness<DataFlowManagementState>
     {
         #region Fields
         #endregion
@@ -34,8 +34,8 @@ namespace LCU.State.API.NapkinIDE.NapkinIDE.ReplaceThis
         #endregion
 
         #region Constructors
-        public ReplaceThisStateHarness(ReplaceThisState state)
-            : base(state ?? new ReplaceThisState())
+        public DataFlowManagementStateHarness(DataFlowManagementState state)
+            : base(state ?? new DataFlowManagementState())
         { }
         #endregion
 

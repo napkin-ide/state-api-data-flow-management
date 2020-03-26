@@ -2,7 +2,7 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <AzureFunctionsVersion>v3</AzureFunctionsVersion>
-    <RootNamespace>state_api_replace_this</RootNamespace>
+    <RootNamespace>state_api_data_flow_management</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="LCU.StateAPI" Version="1.162.20079.2" />
