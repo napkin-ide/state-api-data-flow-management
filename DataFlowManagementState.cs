@@ -16,6 +16,7 @@ using Microsoft.Azure.WebJobs.Extensions.SignalRService;
 using Newtonsoft.Json.Converters;
 using System.Runtime.Serialization;
 using System.Collections.Generic;
+using LCU.Graphs.Registry.Enterprises.DataFlows;
 
 namespace LCU.State.API.NapkinIDE.NapkinIDE.DataFlowManagement
 {
@@ -28,6 +29,30 @@ namespace LCU.State.API.NapkinIDE.NapkinIDE.DataFlowManagement
         #endregion
         
         [DataMember]
+        public virtual DataFlow ActiveDataFlow { get; set; }
+        
+        [DataMember]
+        public bool AllowCreationModules { get; set; }
+        
+        [DataMember]
+        public virtual List<DataFlow> DataFlows { get; set; }
+        
+        [DataMember]
+        public virtual string EnvironmentLookup { get; set; }
+        
+        [DataMember]
+        public virtual bool IsCreating { get; set; }
+        
+        [DataMember]
         public virtual bool Loading { get; set; }
+        
+        [DataMember]
+        public virtual List<ModulePack> ModulePacks { get; set; }
+        
+        [DataMember]
+        public virtual List<ModuleOption> ModuleOptions { get; set; }
+        
+        [DataMember]
+        public virtual List<ModuleDisplay> ModuleDisplays { get; set; }
     }
 }
