@@ -50,6 +50,8 @@ namespace LCU.State.API.NapkinIDE.NapkinIDE.DataFlowManagement
                 var stateDetails = StateUtils.LoadStateDetails(req);
 
                 await harness.DeleteDataFlow(appMgr, appDev, stateDetails.EnterpriseAPIKey, reqData.DataFlowLookup);
+
+                return Status.Success;
             });
         }
     }

@@ -48,6 +48,8 @@ namespace LCU.State.API.NapkinIDE.NapkinIDE.DataFlowManagement
                 var stateDetails = StateUtils.LoadStateDetails(req);
 
                 await harness.ToggleCreationModules(entMgr, appMgr, stateDetails.EnterpriseAPIKey, stateDetails.Host);
+
+                return Status.Success;
             });
         }
     }
