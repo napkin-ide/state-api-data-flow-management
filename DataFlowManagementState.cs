@@ -17,6 +17,7 @@ using Newtonsoft.Json.Converters;
 using System.Runtime.Serialization;
 using System.Collections.Generic;
 using LCU.Graphs.Registry.Enterprises.DataFlows;
+using LCU.Personas.Enterprises;
 
 namespace LCU.State.API.NapkinIDE.NapkinIDE.DataFlowManagement
 {
@@ -39,6 +40,9 @@ namespace LCU.State.API.NapkinIDE.NapkinIDE.DataFlowManagement
         
         [DataMember]
         public virtual string EnvironmentLookup { get; set; }
+
+        [DataMember]
+        public virtual List<InfrastructureDetails> InfrastructureDetails { get; set; }
         
         [DataMember]
         public virtual bool IsCreating { get; set; }
