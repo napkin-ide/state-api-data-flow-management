@@ -89,6 +89,13 @@ namespace LCU.State.API.NapkinIDE.NapkinIDE.DataFlowManagement
             State.EnvironmentLookup = resp.Model?.FirstOrDefault()?.Lookup;
         }
 
+        public virtual async Task LoadInfrastructure(EnterpriseManagerClient entMgr, string entApiKey, string envLookup, string type)
+        {
+            var regHosts = await entMgr.LoadInfrastructureDetails(entApiKey, envLookup, type);
+
+            State.InfrastructureDetails = regHosts.Model;
+        }
+
         public virtual async Task LoadModulePackSetup(EnterpriseManagerClient entMgr, ApplicationManagerClient appMgr, string entApiKey, string host)
         {
             var mpsResp = await appMgr.ListModulePackSetups(entApiKey, host);
@@ -186,6 +193,7 @@ namespace LCU.State.API.NapkinIDE.NapkinIDE.DataFlowManagement
             await LoadDataFlows(appMgr, appDev, entApiKey);
 
             await LoadModulePackSetup(entMgr, appMgr, entApiKey, host);
+
         }
 
         public virtual async Task SaveDataFlow(ApplicationManagerClient appMgr, ApplicationDeveloperClient appDev, string entApiKey, DataFlow dataFlow)
