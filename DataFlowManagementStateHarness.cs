@@ -98,7 +98,7 @@ namespace LCU.State.API.NapkinIDE.NapkinIDE.DataFlowManagement
 
         public virtual async Task LoadModulePackSetup(EnterpriseManagerClient entMgr, ApplicationManagerClient appMgr, string entApiKey, string host)
         {
-            var mpsResp = await appMgr.ListModulePackSetups(entApiKey, host);
+            var mpsResp = await appMgr.ListModulePackSetups(entApiKey);
 
             State.ModulePacks = new List<ModulePack>();
 
