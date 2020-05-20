@@ -198,7 +198,7 @@ namespace LCU.State.API.NapkinIDE.NapkinIDE.DataFlowManagement
 
         public virtual async Task SaveDataFlow(ApplicationManagerClient appMgr, ApplicationDeveloperClient appDev, string entApiKey, DataFlow dataFlow)
         {
-            var shouldSave = false;
+            var shouldSave = true;
 
             if (dataFlow.ID == Guid.Empty)
             {
