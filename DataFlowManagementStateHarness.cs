@@ -198,9 +198,23 @@ namespace LCU.State.API.NapkinIDE.NapkinIDE.DataFlowManagement
 
         public virtual async Task SaveDataFlow(ApplicationManagerClient appMgr, ApplicationDeveloperClient appDev, string entApiKey, DataFlow dataFlow)
         {
-            var resp = await appMgr.SaveDataFlow(dataFlow, entApiKey, State.EnvironmentLookup);
+            var shouldSave = false;
 
-            State.IsCreating = !resp.Status;
+            if (dataFlow.ID == Guid.Empty)
+            {
+                var existing = await appMgr.GetDataFlow(entApiKey, State.EnvironmentLookup, dataFlow.Lookup);
+
+                shouldSave = existing == null;
+            }
+
+            if (shouldSave)
+            {
+                var resp = await appMgr.SaveDataFlow(dataFlow, entApiKey, State.EnvironmentLookup);
+
+                State.IsCreating = !resp.Status;
+            }
+            else
+                State.IsCreating = true;    //  TODO:  How to get the error back to the user
 
             await LoadDataFlows(appMgr, appDev, entApiKey);
         }
