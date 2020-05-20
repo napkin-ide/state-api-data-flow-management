@@ -200,7 +200,7 @@ namespace LCU.State.API.NapkinIDE.NapkinIDE.DataFlowManagement
         {
             var shouldSave = true;
 
-            if (dataFlow.ID == Guid.Empty)
+            if (dataFlow.ID != Guid.Empty)
             {
                 var existing = await appMgr.GetDataFlow(entApiKey, State.EnvironmentLookup, dataFlow.Lookup);
 
