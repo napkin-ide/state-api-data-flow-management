@@ -17,7 +17,7 @@ using LCU.Personas.Client.Applications;
 
 namespace LCU.State.API.NapkinIDE.NapkinIDE.DataFlowManagement
 {
-    [Serializable]
+    //[Serializable]
     [DataContract]
     public class SaveDataFlowRequest
     {
@@ -46,6 +46,8 @@ namespace LCU.State.API.NapkinIDE.NapkinIDE.DataFlowManagement
             return await stateBlob.WithStateHarness<DataFlowManagementState, SaveDataFlowRequest, DataFlowManagementStateHarness>(req, signalRMessages, log,
                 async (harness, reqData, actReq) =>
             {
+                var test = reqData.DataFlow;
+
                 log.LogInformation($"Saving Data Flow: {reqData.DataFlow.Name}");
 
                 var stateDetails = StateUtils.LoadStateDetails(req);

@@ -204,7 +204,7 @@ namespace LCU.State.API.NapkinIDE.NapkinIDE.DataFlowManagement
             {
                 var existing = await appMgr.GetDataFlow(entApiKey, State.EnvironmentLookup, dataFlow.Lookup);
 
-                shouldSave = existing == null;
+              //  shouldSave = existing == null;
             }
 
             if (shouldSave)
@@ -226,7 +226,7 @@ namespace LCU.State.API.NapkinIDE.NapkinIDE.DataFlowManagement
             if (State.ActiveDataFlow != null)
             {
                 //  Trying on refresh only...
-                // await LoadModulePackSetup();
+               // await LoadModulePackSetup(entMgr, appMgr, entApiKey, host);
 
                 await CheckActiveDataFlowStatus(appDev, entApiKey);
             }
