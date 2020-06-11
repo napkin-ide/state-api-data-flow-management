@@ -13,7 +13,6 @@
       "auto": true
     },
     {
-<<<<<<< HEAD
         "label": "clean",
         "command": "dotnet",
         "args": [
@@ -23,17 +22,6 @@
         ],
         "type": "process",
         "problemMatcher": "$msCompile"
-=======
-      "label": "clean",
-      "command": "dotnet",
-      "args": [
-        "clean",
-        "/property:GenerateFullPaths=true",
-        "/consoleloggerparameters:NoSummary"
-      ],
-      "type": "process",
-      "problemMatcher": "$msCompile"
->>>>>>> integration
     },
     {
         "label": "build",
