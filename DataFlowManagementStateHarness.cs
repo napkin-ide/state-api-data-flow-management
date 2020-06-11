@@ -198,23 +198,29 @@ namespace LCU.State.API.NapkinIDE.NapkinIDE.DataFlowManagement
 
         public virtual async Task SaveDataFlow(ApplicationManagerClient appMgr, ApplicationDeveloperClient appDev, string entApiKey, DataFlow dataFlow)
         {
-            var shouldSave = true;
-
-            if (dataFlow.ID != Guid.Empty)
+            // Create a new data flow
+            if (String.IsNullOrEmpty(dataFlow.Lookup) && (dataFlow.ID == Guid.Empty))
             {
+                var resp = await appMgr.SaveDataFlow(dataFlow, entApiKey, State.EnvironmentLookup);
+
+                State.IsCreating = true;
+            }
+            else
+            {
+                // If lookup property exists, look for existing data flow
                 var existing = await appMgr.GetDataFlow(entApiKey, State.EnvironmentLookup, dataFlow.Lookup);
 
-                shouldSave = existing == null;
-            }
+                if (existing == null)
+                {
+                    // If it doesn't exist, clear the lookup
+                    dataFlow.Lookup = String.Empty;
+                    State.IsCreating = true;
+                }
 
-            if (shouldSave)
-            {
                 var resp = await appMgr.SaveDataFlow(dataFlow, entApiKey, State.EnvironmentLookup);
 
                 State.IsCreating = !resp.Status;
             }
-            else
-                State.IsCreating = true;    //  TODO:  How to get the error back to the user
 
             await LoadDataFlows(appMgr, appDev, entApiKey);
         }
