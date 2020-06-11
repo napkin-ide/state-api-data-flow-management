@@ -13,6 +13,7 @@ using Microsoft.Azure.WebJobs.Extensions.SignalRService;
 using Microsoft.WindowsAzure.Storage.Blob;
 using LCU.StateAPI.Utilities;
 using LCU.Personas.Client.Applications;
+using LCU.Personas.Client.Enterprises;
 
 namespace LCU.State.API.NapkinIDE.NapkinIDE.DataFlowManagement
 {
@@ -28,9 +29,17 @@ namespace LCU.State.API.NapkinIDE.NapkinIDE.DataFlowManagement
     {
         protected ApplicationDeveloperClient appDev;
 
-        public SetActiveDataFlow(ApplicationDeveloperClient appDev)
+        protected EnterpriseManagerClient entMgr;
+
+        protected ApplicationManagerClient appMgr;
+
+        public SetActiveDataFlow(EnterpriseManagerClient entMgr, ApplicationManagerClient appMgr, ApplicationDeveloperClient appDev)
         {
             this.appDev = appDev;
+
+            this.entMgr = entMgr;
+
+            this.appMgr = appMgr;
         }
 
         [FunctionName("SetActiveDataFlow")]

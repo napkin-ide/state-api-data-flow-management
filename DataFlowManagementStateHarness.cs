@@ -210,12 +210,17 @@ namespace LCU.State.API.NapkinIDE.NapkinIDE.DataFlowManagement
                 // If lookup property exists, look for existing data flow
                 var existing = await appMgr.GetDataFlow(entApiKey, State.EnvironmentLookup, dataFlow.Lookup);
 
+<<<<<<< HEAD
                 if (existing == null)
                 {
                     // If it doesn't exist, clear the lookup
                     dataFlow.Lookup = String.Empty;
                     State.IsCreating = true;
                 }
+=======
+              //  shouldSave = existing == null;
+            }
+>>>>>>> integration
 
                 var resp = await appMgr.SaveDataFlow(dataFlow, entApiKey, State.EnvironmentLookup);
 
@@ -232,7 +237,7 @@ namespace LCU.State.API.NapkinIDE.NapkinIDE.DataFlowManagement
             if (State.ActiveDataFlow != null)
             {
                 //  Trying on refresh only...
-                // await LoadModulePackSetup();
+               // await LoadModulePackSetup(entMgr, appMgr, entApiKey, host);
 
                 await CheckActiveDataFlowStatus(appDev, entApiKey);
             }
