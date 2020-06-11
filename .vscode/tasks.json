@@ -13,15 +13,15 @@
       "auto": true
     },
     {
-      "label": "clean",
-      "command": "dotnet",
-      "args": [
-        "clean",
-        "/property:GenerateFullPaths=true",
-        "/consoleloggerparameters:NoSummary"
-      ],
-      "type": "process",
-      "problemMatcher": "$msCompile"
+        "label": "clean",
+        "command": "dotnet",
+        "args": [
+            "clean",
+            "/property:GenerateFullPaths=true",
+            "/consoleloggerparameters:NoSummary"
+        ],
+        "type": "process",
+        "problemMatcher": "$msCompile"
     },
     {
         "label": "build",
