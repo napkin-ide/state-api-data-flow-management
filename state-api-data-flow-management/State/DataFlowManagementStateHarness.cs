@@ -18,7 +18,7 @@ using Fathym.API;
 using LCU.Graphs.Registry.Enterprises.DataFlows;
 using Newtonsoft.Json.Linq;
 
-namespace LCU.State.API.NapkinIDE.NapkinIDE.DataFlowManagement
+namespace LCU.State.API.NapkinIDE.NapkinIDE.DataFlowManagement.State
 {
     public class DataFlowManagementStateHarness : LCUStateHarness<DataFlowManagementState>
     {
@@ -35,70 +35,74 @@ namespace LCU.State.API.NapkinIDE.NapkinIDE.DataFlowManagement
         #endregion
 
         #region API Methods
-        public virtual async Task AddIoTInfrastructure(DevOpsArchitectClient devOpsArch, string entApiKey, string username)
+        public virtual async Task AddIoTInfrastructure(DevOpsArchitectClient devOpsArch, string entLookup, string username)
         {
+            //  TODO:  Handle the fact that we don't have ProjectID
             var resp = await devOpsArch.SetEnvironmentInfrastructure(new Personas.DevOps.SetEnvironmentInfrastructureRequest()
             {
-                Template = "fathym\\daf-iot-setup"
-            }, entApiKey, State.EnvironmentLookup, username);
+                Template = "fathym\\daf-iot-setup",
+                EnvironmentLookup = State.EnvironmentLookup,
+                ProjectID = null,
+                Username = username
+            }, entLookup);
         }
 
-        public virtual async Task CheckActiveDataFlowStatus(ApplicationDeveloperClient appDev, string entApiKey)
+        public virtual async Task CheckActiveDataFlowStatus(ApplicationDeveloperClient appDev, string entLookup)
         {
             var resp = await appDev.CheckDataFlowStatus(new Personas.Applications.CheckDataFlowStatusRequest()
             {
                 DataFlow = State.ActiveDataFlow,
                 Type = Personas.Applications.DataFlowStatusTypes.QuickView
-            }, entApiKey, State.EnvironmentLookup);
+            }, entLookup, State.EnvironmentLookup);
 
             State.ActiveDataFlow = resp.DataFlow;
         }
 
-        public virtual async Task DeleteDataFlow(ApplicationManagerClient appMgr, ApplicationDeveloperClient appDev, string entApiKey, string dataFlowLookup)
+        public virtual async Task DeleteDataFlow(ApplicationManagerClient appMgr, ApplicationDeveloperClient appDev, string entLookup, string dataFlowLookup)
         {
-            var resp = await appMgr.DeleteDataFlow(entApiKey, State.EnvironmentLookup, dataFlowLookup);
+            var resp = await appMgr.DeleteDataFlow(entLookup, State.EnvironmentLookup, dataFlowLookup);
 
-            await LoadDataFlows(appMgr, appDev, entApiKey);
+            await LoadDataFlows(appMgr, appDev, entLookup);
         }
 
-        public virtual async Task DeployDataFlow(ApplicationManagerClient appMgr, ApplicationDeveloperClient appDev, string entApiKey, string dataFlowLookup)
+        public virtual async Task DeployDataFlow(ApplicationManagerClient appMgr, ApplicationDeveloperClient appDev, string entLookup, string dataFlowLookup)
         {
             var resp = await appDev.DeployDataFlow(new Personas.Applications.DeployDataFlowRequest()
             {
                 DataFlowLookup = dataFlowLookup
-            }, entApiKey, State.EnvironmentLookup);
+            }, entLookup, State.EnvironmentLookup);
 
             State.IsCreating = !resp.Status;
 
-            await LoadDataFlows(appMgr, appDev, entApiKey);
+            await LoadDataFlows(appMgr, appDev, entLookup);
         }
 
-        public virtual async Task LoadDataFlows(ApplicationManagerClient appMgr, ApplicationDeveloperClient appDev, string entApiKey)
+        public virtual async Task LoadDataFlows(ApplicationManagerClient appMgr, ApplicationDeveloperClient appDev, string entLookup)
         {
-            var resp = await appMgr.ListDataFlows(entApiKey, State.EnvironmentLookup);
+            var resp = await appMgr.ListDataFlows(entLookup, State.EnvironmentLookup);
 
             State.DataFlows = resp.Model;
 
-            await SetActiveDataFlow(appDev, entApiKey, State?.ActiveDataFlow?.Lookup);
+            await SetActiveDataFlow(appDev, entLookup, State?.ActiveDataFlow?.Lookup);
         }
 
-        public virtual async Task LoadEnvironment(EnterpriseManagerClient entMgr, string entApiKey)
+        public virtual async Task LoadEnvironment(EnterpriseManagerClient entMgr, string entLookup)
         {
-            var resp = await entMgr.ListEnvironments(entApiKey);
+            var resp = await entMgr.ListEnvironments(entLookup);
 
             State.EnvironmentLookup = resp.Model?.FirstOrDefault()?.Lookup;
         }
 
-        public virtual async Task LoadInfrastructure(EnterpriseManagerClient entMgr, string entApiKey, string envLookup, string type)
+        public virtual async Task LoadInfrastructure(EnterpriseManagerClient entMgr, string entLookup, string envLookup, string type)
         {
-            var regHosts = await entMgr.LoadInfrastructureDetails(entApiKey, envLookup, type);
+            var regHosts = await entMgr.LoadInfrastructureDetails(entLookup, envLookup, type);
 
             State.InfrastructureDetails = regHosts.Model;
         }
 
-        public virtual async Task LoadModulePackSetup(EnterpriseManagerClient entMgr, ApplicationManagerClient appMgr, string entApiKey, string host)
+        public virtual async Task LoadModulePackSetup(EnterpriseManagerClient entMgr, ApplicationManagerClient appMgr, string entLookup, string host)
         {
-            var mpsResp = await appMgr.ListModulePackSetups(entApiKey);
+            var mpsResp = await appMgr.ListModulePackSetups(entLookup);
 
             State.ModulePacks = new List<ModulePack>();
 
@@ -144,7 +148,7 @@ namespace LCU.State.API.NapkinIDE.NapkinIDE.DataFlowManagement
 
                 await moduleOptions.Each(async mo =>
                 {
-                    var moInfraResp = await entMgr.LoadInfrastructureDetails(entApiKey, State.EnvironmentLookup, mo.ModuleType);
+                    var moInfraResp = await entMgr.LoadInfrastructureDetails(entLookup, State.EnvironmentLookup, mo.ModuleType);
 
                     var moDisp = State.ModuleDisplays.FirstOrDefault(md => md.ModuleType == mo.ModuleType);
 
@@ -186,29 +190,29 @@ namespace LCU.State.API.NapkinIDE.NapkinIDE.DataFlowManagement
             }
         }
 
-        public virtual async Task Refresh(EnterpriseManagerClient entMgr, ApplicationManagerClient appMgr, ApplicationDeveloperClient appDev, string entApiKey, string host)
+        public virtual async Task Refresh(EnterpriseManagerClient entMgr, ApplicationManagerClient appMgr, ApplicationDeveloperClient appDev, string entLookup, string host)
         {
-            await LoadEnvironment(entMgr, entApiKey);
+            await LoadEnvironment(entMgr, entLookup);
 
-            await LoadDataFlows(appMgr, appDev, entApiKey);
+            await LoadDataFlows(appMgr, appDev, entLookup);
 
-            await LoadModulePackSetup(entMgr, appMgr, entApiKey, host);
+            await LoadModulePackSetup(entMgr, appMgr, entLookup, host);
 
         }
 
-        public virtual async Task SaveDataFlow(ApplicationManagerClient appMgr, ApplicationDeveloperClient appDev, string entApiKey, DataFlow dataFlow)
+        public virtual async Task SaveDataFlow(ApplicationManagerClient appMgr, ApplicationDeveloperClient appDev, string entLookup, DataFlow dataFlow)
         {
             // Create a new data flow
             if (String.IsNullOrEmpty(dataFlow.Lookup) && (dataFlow.ID == Guid.Empty))
             {
-                var resp = await appMgr.SaveDataFlow(dataFlow, entApiKey, State.EnvironmentLookup);
+                var resp = await appMgr.SaveDataFlow(dataFlow, entLookup, State.EnvironmentLookup);
 
                 State.IsCreating = true;
             }
             else
             {
                 // If lookup property exists, look for existing data flow
-                var existing = await appMgr.GetDataFlow(entApiKey, State.EnvironmentLookup, dataFlow.Lookup);
+                var existing = await appMgr.GetDataFlow(entLookup, State.EnvironmentLookup, dataFlow.Lookup);
 
                 if (existing == null)
                 {
@@ -217,32 +221,32 @@ namespace LCU.State.API.NapkinIDE.NapkinIDE.DataFlowManagement
                     State.IsCreating = true;
                 }
 
-                var resp = await appMgr.SaveDataFlow(dataFlow, entApiKey, State.EnvironmentLookup);
+                var resp = await appMgr.SaveDataFlow(dataFlow, entLookup, State.EnvironmentLookup);
 
                 State.IsCreating = !resp.Status;
             }
 
-            await LoadDataFlows(appMgr, appDev, entApiKey);
+            await LoadDataFlows(appMgr, appDev, entLookup);
         }
 
-        public virtual async Task SetActiveDataFlow(ApplicationDeveloperClient appDev, string entApiKey, string dfLookup)
+        public virtual async Task SetActiveDataFlow(ApplicationDeveloperClient appDev, string entLookup, string dfLookup)
         {
             State.ActiveDataFlow = State.DataFlows.FirstOrDefault(df => df.Lookup == dfLookup);
 
             if (State.ActiveDataFlow != null)
             {
                 //  Trying on refresh only...
-               // await LoadModulePackSetup(entMgr, appMgr, entApiKey, host);
+               // await LoadModulePackSetup(entMgr, appMgr, entLookup, host);
 
-                await CheckActiveDataFlowStatus(appDev, entApiKey);
+                await CheckActiveDataFlowStatus(appDev, entLookup);
             }
         }
 
-        public virtual async Task ToggleCreationModules(EnterpriseManagerClient entMgr, ApplicationManagerClient appMgr, string entApiKey, string host)
+        public virtual async Task ToggleCreationModules(EnterpriseManagerClient entMgr, ApplicationManagerClient appMgr, string entLookup, string host)
         {
             State.AllowCreationModules = !State.AllowCreationModules;
 
-            await LoadModulePackSetup(entMgr, appMgr, entApiKey, host);
+            await LoadModulePackSetup(entMgr, appMgr, entLookup, host);
         }
 
         public virtual async Task ToggleIsCreating()

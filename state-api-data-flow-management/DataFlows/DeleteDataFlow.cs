@@ -10,46 +10,47 @@ using Newtonsoft.Json;
 using System.Runtime.Serialization;
 using Fathym;
 using Microsoft.Azure.WebJobs.Extensions.SignalRService;
-using Microsoft.WindowsAzure.Storage.Blob;
+using Microsoft.Azure.Storage.Blob;
 using LCU.StateAPI.Utilities;
 using LCU.Personas.Client.Applications;
+using LCU.State.API.NapkinIDE.NapkinIDE.DataFlowManagement.State;
 
-namespace LCU.State.API.NapkinIDE.NapkinIDE.DataFlowManagement
+namespace LCU.State.API.NapkinIDE.NapkinIDE.DataFlowManagement.DataFlows
 {
     [Serializable]
     [DataContract]
-    public class DeployDataFlowRequest
+    public class DeleteDataFlowRequest
     {
         [DataMember]
         public virtual string DataFlowLookup { get; set; }
     }
 
-    public class DeployDataFlow
+    public class DeleteDataFlow
     {
         protected ApplicationDeveloperClient appDev;
         
         protected ApplicationManagerClient appMgr;
 
-        public DeployDataFlow(ApplicationManagerClient appMgr, ApplicationDeveloperClient appDev)
+        public DeleteDataFlow(ApplicationManagerClient appMgr, ApplicationDeveloperClient appDev)
         {
             this.appDev = appDev;
             
             this.appMgr = appMgr;
         }
 
-        [FunctionName("DeployDataFlow")]
+        [FunctionName("DeleteDataFlow")]
         public virtual async Task<Status> Run([HttpTrigger] HttpRequest req, ILogger log,
             [SignalR(HubName = DataFlowManagementState.HUB_NAME)]IAsyncCollector<SignalRMessage> signalRMessages,
-            [Blob("state-api/{headers.lcu-ent-api-key}/{headers.lcu-hub-name}/{headers.x-ms-client-principal-id}/{headers.lcu-state-key}", FileAccess.ReadWrite)] CloudBlockBlob stateBlob)
+            [Blob("state-api/{headers.lcu-ent-lookup}/{headers.lcu-hub-name}/{headers.x-ms-client-principal-id}/{headers.lcu-state-key}", FileAccess.ReadWrite)] CloudBlockBlob stateBlob)
         {
-            return await stateBlob.WithStateHarness<DataFlowManagementState, DeployDataFlowRequest, DataFlowManagementStateHarness>(req, signalRMessages, log,
+            return await stateBlob.WithStateHarness<DataFlowManagementState, DeleteDataFlowRequest, DataFlowManagementStateHarness>(req, signalRMessages, log,
                 async (harness, reqData, actReq) =>
             {
-                log.LogInformation($"Deploying Data Flow: {reqData.DataFlowLookup}");
-
+                log.LogInformation($"Deleting Data Flow: {reqData.DataFlowLookup}");
+                
                 var stateDetails = StateUtils.LoadStateDetails(req);
 
-                await harness.DeployDataFlow(appMgr, appDev, stateDetails.EnterpriseAPIKey, reqData.DataFlowLookup);
+                await harness.DeleteDataFlow(appMgr, appDev, stateDetails.EnterpriseLookup, reqData.DataFlowLookup);
 
                 return Status.Success;
             });

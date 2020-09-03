@@ -19,7 +19,7 @@ using System.Collections.Generic;
 using LCU.Graphs.Registry.Enterprises.DataFlows;
 using LCU.Personas.Enterprises;
 
-namespace LCU.State.API.NapkinIDE.NapkinIDE.DataFlowManagement
+namespace LCU.State.API.NapkinIDE.NapkinIDE.DataFlowManagement.State
 {
     [Serializable]
     [DataContract]

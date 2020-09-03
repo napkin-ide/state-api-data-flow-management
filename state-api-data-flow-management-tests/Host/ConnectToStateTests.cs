@@ -22,7 +22,7 @@ namespace state_api_data_flow_management_tests
         [TestMethod]
         public async Task TestConnectToState()
         {
-            LcuEntApiKey = "";            
+            LcuEntLookup = "";            
             PrincipalId = "";
 
             addRequestHeaders();
