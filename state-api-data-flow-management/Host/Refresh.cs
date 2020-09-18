@@ -9,7 +9,7 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Microsoft.Azure.WebJobs.Extensions.SignalRService;
 using Fathym;
-using Microsoft.WindowsAzure.Storage.Blob;
+using Microsoft.Azure.Storage.Blob;
 using System.Runtime.Serialization;
 using Fathym.API;
 using System.Collections.Generic;
@@ -18,8 +18,9 @@ using LCU.Personas.Client.Applications;
 using LCU.StateAPI.Utilities;
 using System.Security.Claims;
 using LCU.Personas.Client.Enterprises;
+using LCU.State.API.NapkinIDE.NapkinIDE.DataFlowManagement.State;
 
-namespace LCU.State.API.NapkinIDE.NapkinIDE.DataFlowManagement
+namespace LCU.State.API.NapkinIDE.NapkinIDE.DataFlowManagement.Host
 {
     [Serializable]
     [DataContract]
@@ -46,7 +47,7 @@ namespace LCU.State.API.NapkinIDE.NapkinIDE.DataFlowManagement
         [FunctionName("Refresh")]
         public virtual async Task<Status> Run([HttpTrigger] HttpRequest req, ILogger log,
             [SignalR(HubName = DataFlowManagementState.HUB_NAME)]IAsyncCollector<SignalRMessage> signalRMessages,
-            [Blob("state-api/{headers.lcu-ent-api-key}/{headers.lcu-hub-name}/{headers.x-ms-client-principal-id}/{headers.lcu-state-key}", FileAccess.ReadWrite)] CloudBlockBlob stateBlob)
+            [Blob("state-api/{headers.lcu-ent-lookup}/{headers.lcu-hub-name}/{headers.x-ms-client-principal-id}/{headers.lcu-state-key}", FileAccess.ReadWrite)] CloudBlockBlob stateBlob)
         {
             return await stateBlob.WithStateHarness<DataFlowManagementState, RefreshRequest, DataFlowManagementStateHarness>(req, signalRMessages, log,
                 async (harness, refreshReq, actReq) =>
@@ -55,7 +56,7 @@ namespace LCU.State.API.NapkinIDE.NapkinIDE.DataFlowManagement
 
                 var stateDetails = StateUtils.LoadStateDetails(req);
 
-                await harness.Refresh(entMgr, appMgr, appDev, stateDetails.EnterpriseAPIKey, stateDetails.Host);
+                await harness.Refresh(entMgr, appMgr, appDev, stateDetails.EnterpriseLookup, stateDetails.Host);
 
                 return Status.Success;
             });
