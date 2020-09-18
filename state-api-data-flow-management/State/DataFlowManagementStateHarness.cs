@@ -114,7 +114,9 @@ namespace LCU.State.API.NapkinIDE.NapkinIDE.DataFlowManagement.State
 
             if (mpsResp.Status)
             {
-                mpsResp.Model.Each(mps =>
+                var mpsList = mpsResp.Model.Where(mps => mps.Pack != null);
+                
+                mpsList.Each(mps =>
                 {
                     State.ModulePacks = State.ModulePacks.Where(mp => mp.Lookup != mps.Pack.Lookup).ToList();
 
