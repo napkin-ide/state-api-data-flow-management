@@ -17,6 +17,7 @@ using LCU.Personas.Client.Applications;
 using Fathym.API;
 using LCU.Graphs.Registry.Enterprises.DataFlows;
 using Newtonsoft.Json.Linq;
+using Microsoft.Extensions.Logging;
 
 namespace LCU.State.API.NapkinIDE.NapkinIDE.DataFlowManagement.State
 {
@@ -29,8 +30,8 @@ namespace LCU.State.API.NapkinIDE.NapkinIDE.DataFlowManagement.State
         #endregion
 
         #region Constructors
-        public DataFlowManagementStateHarness(DataFlowManagementState state)
-            : base(state ?? new DataFlowManagementState())
+        public DataFlowManagementStateHarness(DataFlowManagementState state, ILogger log)
+            : base(state ?? new DataFlowManagementState(), log)
         { }
         #endregion
 
@@ -114,7 +115,7 @@ namespace LCU.State.API.NapkinIDE.NapkinIDE.DataFlowManagement.State
 
             if (mpsResp.Status)
             {
-                var mpsList = mpsResp.Model.Where(mps => mps.Pack != null);
+                var mpsList = mpsResp.Model.Where(mps => mps?.Pack != null).ToList();
                 
                 mpsList.Each(mps =>
                 {
